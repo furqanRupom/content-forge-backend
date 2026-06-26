@@ -1,0 +1,16 @@
+model Template {
+    id          String       @id @default(uuid())
+    key         String       @unique
+    title       String
+    description String
+    type        TemplateType
+    category    String
+    promptHint  String?
+    isActive    Boolean      @default(true)
+    createdAt   DateTime     @default(now())
+    updatedAt   DateTime     @updatedAt
+
+    generationJobs GenerationJob[]
+
+    @@map("template")
+}

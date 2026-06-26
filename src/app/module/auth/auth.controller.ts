@@ -1,5 +1,5 @@
 import BaseController from "../../shared/baseController";
-import type { Request, Response } from "express"
+import { Request, Response } from "express"
 import { AuthService } from "./auth.service";
 import status from "http-status"
 import AppError from "../../errorHelpers/AppError";
@@ -10,7 +10,13 @@ import { auth } from "../../lib/auth";
 
 class Controller extends BaseController {
     register = this.catchAsync(async (req: Request, res: Response) => {
-        const result = await AuthService.register(req.body)
+        const payload = req.body
+        const result = await AuthService.register(payload)
+        const { accessToken, refreshToken, token, ...rest } = result;
+
+        tokenUtils.setAccessTokenCookie(res, accessToken)
+        tokenUtils.setRefreshTokenCookie(res, refreshToken)
+        tokenUtils.setBetterAuthSessionCookie(res, token as string)
         this.sendResponse(res, {
             statusCode: status.CREATED,
             success: true,
@@ -19,7 +25,8 @@ class Controller extends BaseController {
         })
     })
     login = this.catchAsync(async (req: Request, res: Response) => {
-        const result = await AuthService.loginUser(req.body);
+        const payload = req.body
+        const result = await AuthService.loginUser(payload);
         const { accessToken, refreshToken, token, ...rest } = result
 
         tokenUtils.setAccessTokenCookie(res, accessToken);

@@ -1,21 +1,8 @@
-/*
-  Warnings:
+-- CreateEnum
+CREATE TYPE "UserRole" AS ENUM ('USER', 'ADMIN', 'MANAGER');
 
-  - You are about to drop the column `isActive` on the `users` table. All the data in the column will be lost.
-  - You are about to drop the column `passwordHash` on the `users` table. All the data in the column will be lost.
-  - Added the required column `password` to the `users` table without a default value. This is not possible if the table is not empty.
-
-*/
 -- CreateEnum
 CREATE TYPE "UserStatus" AS ENUM ('ACTIVE', 'BLOCKED', 'DELETED');
-
--- AlterTable
-ALTER TABLE "users" DROP COLUMN "isActive",
-DROP COLUMN "passwordHash",
-ADD COLUMN     "emailVerified" BOOLEAN NOT NULL DEFAULT false,
-ADD COLUMN     "isDeleted" BOOLEAN NOT NULL DEFAULT false,
-ADD COLUMN     "password" TEXT NOT NULL,
-ADD COLUMN     "status" "UserStatus" NOT NULL DEFAULT 'ACTIVE';
 
 -- CreateTable
 CREATE TABLE "session" (
@@ -62,6 +49,21 @@ CREATE TABLE "verification" (
     CONSTRAINT "verification_pkey" PRIMARY KEY ("id")
 );
 
+-- CreateTable
+CREATE TABLE "users" (
+    "id" TEXT NOT NULL,
+    "name" TEXT NOT NULL,
+    "email" TEXT NOT NULL,
+    "emailVerified" BOOLEAN NOT NULL DEFAULT false,
+    "role" "UserRole" NOT NULL DEFAULT 'USER',
+    "status" "UserStatus" NOT NULL DEFAULT 'ACTIVE',
+    "isDeleted" BOOLEAN NOT NULL DEFAULT false,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" TIMESTAMP(3) NOT NULL,
+
+    CONSTRAINT "users_pkey" PRIMARY KEY ("id")
+);
+
 -- CreateIndex
 CREATE INDEX "session_userId_idx" ON "session"("userId");
 
@@ -73,6 +75,9 @@ CREATE INDEX "account_userId_idx" ON "account"("userId");
 
 -- CreateIndex
 CREATE INDEX "verification_identifier_idx" ON "verification"("identifier");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "users_email_key" ON "users"("email");
 
 -- AddForeignKey
 ALTER TABLE "session" ADD CONSTRAINT "session_userId_fkey" FOREIGN KEY ("userId") REFERENCES "users"("id") ON DELETE CASCADE ON UPDATE CASCADE;

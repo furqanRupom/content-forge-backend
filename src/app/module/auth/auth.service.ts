@@ -5,7 +5,7 @@ import status from "http-status"
 import { IChangePasswordPayload, ILoginUserPayload, IRegisterUserPayload } from "./auth.interface";
 import { prisma } from "../../lib/prisma";
 import { tokenUtils } from "../../utils/token";
-import { UserStatus } from "../../../generated/prisma/enums";
+import { UserStatus } from "../../../generated/prisma/enums"; 
 import { JwtPayload } from "jsonwebtoken";
 import { jwtUtils } from "../../utils/jwt";
 import { envVars } from "../../config/env";
@@ -14,7 +14,6 @@ class Service {
 
     async register(payload:IRegisterUserPayload){
         const { name, email, password } = payload;
-
         const data = await auth.api.signUpEmail({
             body: {
                 name,
@@ -24,7 +23,7 @@ class Service {
         })
 
         if (!data.user) {
-            throw new AppError(status.BAD_REQUEST, "Failed to register patient");
+            throw new AppError(status.BAD_REQUEST, "Failed to register user");
         }
 
         try {
@@ -213,16 +212,7 @@ class Service {
             })
         })
 
-        if (session.user.needPasswordChange) {
-            await prisma.user.update({
-                where: {
-                    id: session.user.id,
-                },
-                data: {
-                    needPasswordChange: false,
-                }
-            })
-        }
+ 
 
         const accessToken = tokenUtils.getAccessToken({
             userId: session.user.id,

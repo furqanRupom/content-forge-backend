@@ -163,7 +163,9 @@ class Controller extends BaseController {
         const encodedRedirectPath = encodeURIComponent(redirectPath as string);
 
         const callbackURL = `${envVars.BETTER_AUTH_URL}/api/v1/auth/google/success?redirect=${encodedRedirectPath}`;
-
+        console.log({
+          better_auth_url: envVars.BETTER_AUTH_URL
+        })
         res.render("googleRedirect", {
             callbackURL: callbackURL,
             betterAuthUrl: envVars.BETTER_AUTH_URL,

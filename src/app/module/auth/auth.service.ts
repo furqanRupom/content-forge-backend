@@ -116,9 +116,6 @@ class Service {
             where: {
                 id: payload.userId,
             },
-            omit:{
-                password:true
-            }
         })
         if (!isUserExists) {
             throw new AppError(status.NOT_FOUND, "User not found");

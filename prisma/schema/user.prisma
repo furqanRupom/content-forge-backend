@@ -1,18 +1,16 @@
-enum UserRole {
-    USER
-    ADMIN
-    MANAGER
-}
-
 model User {
-    id           String   @id @default(uuid())
-    name         String
-    email        String   @unique
-    passwordHash String
-    role         UserRole @default(USER)
-    isActive     Boolean  @default(true)
-    createdAt    DateTime @default(now())
-    updatedAt    DateTime @updatedAt
+  id            String     @id @default(uuid())
+  name          String
+  email         String     @unique
+  emailVerified Boolean    @default(false)
+  password      String
+  role          UserRole   @default(USER)
+  status        UserStatus @default(ACTIVE)
+  isDeleted     Boolean    @default(false)
+  createdAt     DateTime   @default(now())
+  updatedAt     DateTime   @updatedAt
+  sessions      Session[]
+  accounts      Account[]
 
-    @@map("users")
+  @@map("users")
 }

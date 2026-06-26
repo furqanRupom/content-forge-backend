@@ -11,7 +11,7 @@ app.use(cookieParser())
 app.use(express.urlencoded({ extended: true }));
 
 
-// app.use("/api/v1",IndexRoutes)
+app.use("/api/v1",IndexRoutes)
 
 
 app.get('/', async (req: Request, res: Response) => {

@@ -1,5 +1,5 @@
 export * from "./template.interface"
-export * from "./temmplate.controller"
+export * from "./template.controller"
 export * from "./template.service"
 export * from "./template.routes"
 export * from "./template.validation"

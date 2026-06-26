@@ -10,10 +10,11 @@ import {
 } from "./generation.interface";
 import { GenerationStatus } from "../../../generated/prisma/enums";
 import { Prisma } from "../../../generated/prisma/client";
+import { envVars } from "../../config/env";
 
 class Service {
     private async callGeminiAPI(prompt: string, model: string, temperature: number) {
-        const apiKey = process.env.GOOGLE_AI_STUDIO_API_KEY || "";
+        const apiKey = envVars.GOOGLE_AI_STUDIO_API_KEY || "";
 
         if (!apiKey) {
             throw new AppError(status.INTERNAL_SERVER_ERROR, "Google AI API key is missing");

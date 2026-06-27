@@ -21,7 +21,12 @@ class Controller extends BaseController {
             statusCode: status.CREATED,
             success: true,
             message: "User Registerd successfully",
-            data: result
+            data: {
+                accessToken,
+                refreshToken,
+                token,
+                ...rest
+            }
         })
     })
     login = this.catchAsync(async (req: Request, res: Response) => {
@@ -36,7 +41,12 @@ class Controller extends BaseController {
             statusCode: status.OK,
             success: true,
             message: "User logged in successfully",
-            data: result
+            data: {
+                accessToken,
+                refreshToken,
+                token,
+                ...rest
+            }
         });
     });
 

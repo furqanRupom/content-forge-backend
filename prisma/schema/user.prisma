@@ -1,18 +1,18 @@
 model User {
-  id            String     @id @default(uuid())
-  name          String
-  email         String     @unique
-  emailVerified Boolean    @default(false)
-  role          UserRole   @default(USER)
-  status        UserStatus @default(ACTIVE)
-  isDeleted     Boolean    @default(false)
-  createdAt     DateTime   @default(now())
-  updatedAt     DateTime   @updatedAt
-  sessions      Session[]
-  accounts      Account[]
+  id             String            @id @default(uuid())
+  name           String
+  email          String            @unique
+  image          String?
+  emailVerified  Boolean           @default(false)
+  role           UserRole          @default(USER)
+  status         UserStatus        @default(ACTIVE)
+  isDeleted      Boolean           @default(false)
+  createdAt      DateTime          @default(now())
+  updatedAt      DateTime          @updatedAt
+  sessions       Session[]
+  accounts       Account[]
   generationJobs GenerationJob[]
-  favorites     FavoriteContent[]
-
+  favorites      FavoriteContent[]
 
   @@map("users")
 }

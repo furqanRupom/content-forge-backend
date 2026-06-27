@@ -93,7 +93,7 @@ class Controller extends BaseController {
         tokenUtils.setAccessTokenCookie(res, accessToken);
         tokenUtils.setRefreshTokenCookie(res, refreshToken);
         tokenUtils.setBetterAuthSessionCookie(res, token as string);
-
+        
 
         this.sendResponse(res, {
             statusCode: status.OK,
@@ -133,7 +133,6 @@ class Controller extends BaseController {
 
     verifyEmail = this.catchAsync(async (req: Request, res: Response) => {
         const { email, otp } = req.body;
-
         await AuthService.verifyEmail(email, otp);
         this.sendResponse(res, {
             statusCode: status.OK,
@@ -173,9 +172,6 @@ class Controller extends BaseController {
         const encodedRedirectPath = encodeURIComponent(redirectPath as string);
 
         const callbackURL = `${envVars.BETTER_AUTH_URL}/api/v1/auth/google/success?redirect=${encodedRedirectPath}`;
-        console.log({
-          better_auth_url: envVars.BETTER_AUTH_URL
-        })
         res.render("googleRedirect", {
             callbackURL: callbackURL,
             betterAuthUrl: envVars.BETTER_AUTH_URL,

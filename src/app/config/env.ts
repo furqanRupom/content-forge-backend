@@ -32,6 +32,8 @@ interface EnvConfig {
 
     SUPER_ADMIN_EMAIL: string;
     SUPER_ADMIN_PASSWORD: string;
+    DEFAULT_MANAGER_EMAIL:string;
+    DEFAULT_MANAGER_PASSWORD:string
 
     GOOGLE_AI_STUDIO_API_KEY:string;
 }
@@ -63,6 +65,8 @@ const loadEnvVariables = (): EnvConfig => {
      
         'SUPER_ADMIN_EMAIL',
         'SUPER_ADMIN_PASSWORD',
+        'DEFAULT_MANAGER_EMAIL',
+        'DEFAULT_MANAGER_PASSWORD',
         'GOOGLE_AI_STUDIO_API_KEY'
     ]
 
@@ -99,6 +103,8 @@ const loadEnvVariables = (): EnvConfig => {
       
         SUPER_ADMIN_EMAIL: process.env.SUPER_ADMIN_EMAIL as string,
         SUPER_ADMIN_PASSWORD: process.env.SUPER_ADMIN_PASSWORD as string,
+        DEFAULT_MANAGER_EMAIL:process.env.DEFAULT_MANAGER_EMAIL as string,
+        DEFAULT_MANAGER_PASSWORD:process.env.DEFAULT_MANAGER_PASSWORD as string,
         GOOGLE_AI_STUDIO_API_KEY: process.env.GOOGLE_AI_STUDIO_API_KEY as string
     }
 }

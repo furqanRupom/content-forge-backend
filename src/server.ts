@@ -1,16 +1,19 @@
 import "dotenv/config";
-// import config from "./config";
 import { prisma } from "./app/lib/prisma";
 import app from "./app";
+import { seedManager, seedTemplates } from "./app/utils/seed";
+import { envVars } from "./app/config/env";
 
 // const PORT = config.port;
 
 async function main() {
     try {
         await prisma.$connect();
+        // await seedManager()
+        // await seedTemplates()
         console.log("Connected to the database successfully.");
-       app.listen(8080, () => {
-        console.log(`Server is running on port ${8080}`);
+       app.listen(envVars.PORT, () => {
+        console.log(`Server is running on port ${envVars.PORT}`);
        }) 
     } catch (error) {
         console.error("Error starting the server:", error);

@@ -11,7 +11,6 @@ An enterprise-grade, high-performance RESTful API built with **Express (v5)**, *
 * **Authentication Engine:** Better-Auth 1.6 integrated natively alongside JWT backups
 * **Validation Layer:** Zod 4 typesafe data-handling schemas
 * **Task Automation:** Node-Cron decoupled process loop managers
-* **Payment Processing Infrastructure:** Stripe SDK webhook billing pipelines
 
 ---
 

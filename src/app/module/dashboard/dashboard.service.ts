@@ -188,6 +188,110 @@ class Service {
             }))
         };
     }
+
+
+async getContentLogsMetrics(user: IRequestUser) {
+        const isAuthorized = user.role === UserRole.ADMIN || user.role === UserRole.MANAGER;
+        if (!isAuthorized) {
+            throw new Error("Unauthorized access footprint path blocked");
+        }
+
+        // Get total breakdown, running pipeline queues, and recent historical payload generations
+        const [totalRuns, processingRuns, failedRuns, recentLogs] = await Promise.all([
+            prisma.generationJob.count(),
+            prisma.generationJob.count({ where: { status: { in: ["PROCESSING", "QUEUED"] } } }),
+            prisma.generationJob.count({ where: { status: "FAILED" } }),
+            prisma.generationJob.findMany({
+                orderBy: { createdAt: "desc" },
+                take: 10,
+                select: {
+                    id: true,
+                    model: true,
+                    status: true,
+                    createdAt: true,
+                    inputPrompt: true,
+                    user: { select: { name: true, email: true } },
+                    generatedContent: { select: { title: true, wordCount: true } }
+                }
+            })
+        ]);
+
+        return {
+            summary: {
+                totalRuns,
+                processingRuns,
+                failedRuns,
+                stabilityRate: totalRuns > 0 
+                    ? Math.round(((totalRuns - failedRuns) / totalRuns) * 100) 
+                    : 100
+            },
+            recentLogs
+        };
+    }
+    async getUserPerformanceMetrics(user: IRequestUser, query: { period?: string } = {}) {
+        const isAuthorized = user.role === UserRole.ADMIN || user.role === UserRole.MANAGER;
+        if (!isAuthorized) {
+            throw new Error("Unauthorized access footprint path blocked");
+        }
+
+        const { period = "30d" } = query;
+        const periodMap: Record<string, number> = { "7d": 7, "30d": 30, "90d": 90 };
+        const days = periodMap[period] || 30;
+
+        const startDate = new Date();
+        startDate.setDate(startDate.getDate() - days);
+
+        // Fetch user distribution and structural group calculations concurrently
+        const [roleDistribution, totalUsers, newUsersCount, historicalRegistrations] = await Promise.all([
+            prisma.user.groupBy({
+                by: ['role'],
+                _count: { id: true }
+            }),
+            prisma.user.count(),
+            prisma.user.count({
+                where: { createdAt: { gte: startDate } }
+            }),
+            prisma.user.findMany({
+                where: { createdAt: { gte: startDate } },
+                select: { createdAt: true },
+                orderBy: { createdAt: "asc" }
+            })
+        ]);
+
+        // Construct linear dynamic chronological line charts for user registration velocity
+        const userGrowthBuckets: Record<string, number> = {};
+        for (let i = 0; i < days; i++) {
+            const d = new Date();
+            d.setDate(d.getDate() - (days - 1 - i));
+            const key = d.toISOString().split("T")[0];
+            userGrowthBuckets[key] = 0;
+        }
+
+        for (const account of historicalRegistrations) {
+            const key = account.createdAt.toISOString().split("T")[0];
+            if (userGrowthBuckets[key] !== undefined) {
+                userGrowthBuckets[key]++;
+            }
+        }
+
+        return {
+            summary: {
+                totalUsers,
+                newUsersCount,
+                growthPercentage: totalUsers > 0 
+                    ? Math.round((newUsersCount / (totalUsers - newUsersCount || 1)) * 100) 
+                    : 0
+            },
+            roles: roleDistribution.map(r => ({
+                role: r.role,
+                count: r._count.id
+            })),
+            growthTimeline: Object.entries(userGrowthBuckets).map(([date, registrations]) => ({
+                date,
+                registrations
+            }))
+        };
+    }    
 }
 
 export const DashboardService = new Service();

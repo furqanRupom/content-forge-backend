@@ -21,7 +21,8 @@ class Controller extends BaseController {
             statusCode: status.OK,
             success: true,
             message: "Generations fetched successfully",
-            data: result,
+            meta:result.meta,
+            data: result.data
         });
     });
 

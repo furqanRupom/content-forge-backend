@@ -22,7 +22,7 @@ export const auth = betterAuth({
         google: {
             clientId: envVars.GOOGLE_CLIENT_ID,
             clientSecret: envVars.GOOGLE_CLIENT_SECRET,
-            // callbackUrl: envVars.GOOGLE_CALLBACK_URL,
+            callbackUrl: envVars.GOOGLE_CALLBACK_URL,
             mapProfileToUser: () => {
                 return {
                     role: UserRole.USER,
@@ -134,7 +134,7 @@ export const auth = betterAuth({
         signIn: `${envVars.BETTER_AUTH_URL}/api/v1/auth/google/success`,
     },
 
-    trustedOrigins: [process.env.BETTER_AUTH_URL || "http://localhost:5000", envVars.FRONTEND_URL],
+    trustedOrigins: [envVars.BETTER_AUTH_URL || "http://localhost:5000", envVars.FRONTEND_URL],
 
     advanced: {
         useSecureCookies: false,
